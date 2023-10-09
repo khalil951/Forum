@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\AuthorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,6 +48,26 @@ class AuthorController extends AbstractController
     {
         return $this->render('author/show.html.twig', [
             'n' => $name
+        ]);
+    }
+
+    #[Route('/getAll', name: 'author_listDB')]
+    public function getAll(AuthorRepository $repo): Response
+    {
+        /* Select * from author */
+        $list = $repo->findAll();
+        return $this->render('author/listDB.html.twig', [
+            'authors' => $list
+        ]);
+    }
+
+    #[Route('/getOne/{id}', name: 'author_OneDB')]
+    public function getOne(AuthorRepository $repo, $id): Response
+    {
+        /* Select * from author where id=$id */
+        $author = $repo->find($id);
+        return $this->render('author/detailsDB.html.twig', [
+            'author' => $author
         ]);
     }
 }
