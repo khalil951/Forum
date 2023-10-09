@@ -17,7 +17,22 @@ class AuthorController extends AbstractController
         'taha.hussein@gmail.com', 'nb_books' => 300),
     );
 
-    
+    #[Route('/authorList', name: 'author_list')]
+    public function list(): Response
+    {
+        return $this->render('author/list.html.twig', [
+            'authors' => $this->authors
+        ]);
+    }
+
+    #[Route('/details/{id}', name: "author_details")]
+    public function details($id):Response 
+    {
+        return $this->render('author/details.html.twig', [
+            'authors' => $this->authors,
+            'id' => $id
+        ]);
+    }
 
     #[Route('/author', name: 'app_author')]
     public function index(): Response
