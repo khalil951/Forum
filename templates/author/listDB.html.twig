@@ -1,5 +1,0 @@
-{% for a in authors %}
-    {{ a .username }} - {{ a.email }} <br>
-    <a href="{{ path('author_OneDB', {id: a.id}) }}"> Details </a>
-    <br>
-{% endfor %}
