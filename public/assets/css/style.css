@@ -1,0 +1,239 @@
+.button {
+    width: fit-content;
+    display: flex;
+    padding: 0.8em 1rem;
+    cursor: pointer;
+    gap: 0.4rem;
+    font-weight: bold;
+    border-radius: 30px;
+    text-shadow: 2px 2px 3px rgb(136 0 136 / 50%);
+    background: linear-gradient(15deg, #880088, #aa2068, #cc3f47, #de6f3d, #f09f33, #de6f3d, #cc3f47, #aa2068, #880088) no-repeat;
+    background-size: 300%;
+    color: #fff;
+    border: none;
+    background-position: left center;
+    box-shadow: 0 30px 10px -20px rgba(0,0,0,.2);
+    transition: background .3s ease;
+  }
+
+  .button:hover {
+    background-size: 320%;
+    background-position: right center;
+  }
+  
+  .button:hover svg {
+    fill: #fff;
+  }
+  
+  .button svg {
+    width: 23px;
+    fill: #f09f33;
+    transition: .3s ease;
+  }
+
+  .btn {
+    width:auto;
+    display: inline;
+  }
+
+  #BackBtn {
+      display: flex;
+      height: 2em;   
+      width: 90px;
+      align-items: center;
+      justify-content: center;
+      background-color: #eeeeee4b;
+      border-radius: 3px;
+      letter-spacing: 1px;
+      transition: all 0.2s linear;
+      cursor: pointer;
+      border: none;
+      background: #fff;
+     }
+     
+     #BackBtn > svg {
+      margin-right: 5px;
+      margin-left: 5px;
+      font-size: 20px;
+      transition: all 0.4s ease-in;
+     }
+     
+     #BackBtn a {
+         text-decoration:none;
+         color:black;
+     }
+     
+     #BackBtn:hover > svg {
+      font-size: 1.2em;
+      transform: translateX(-5px);
+     }
+     
+     #BackBtn:hover {
+      box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+      transform: translateY(-2px);
+     }
+  
+     .card {
+      padding: 20px;
+      position: relative;
+      background-color:#FAFAFA;
+    }
+  
+  .card .card-title {
+      color: #66B9F4;
+  }
+  
+    .card .card-text {
+      text-align: start;
+      padding-top:1em;
+      margin-bottom:0;
+    }
+    
+    .card:hover {
+      border-left: none !important;
+      border-right: none !important;
+      border-top: 2px solid #de6f3d !important;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 20px 20px 30px rgba(0,0,0,0.06);
+      margin: 2px 0;
+      transition:  ease;
+    }
+  
+    .rating {
+    display: inline-block;
+    top:0;
+  }
+  
+  .rating input {
+    display: none;
+  }
+  
+  .rating label {
+    float: right;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s;
+  }
+  
+  .rating label:before {
+    content: '\2605';
+    font-size: 30px;
+  }
+  
+  .rating input:checked ~ label,
+  .rating label:hover,
+  .rating label:hover ~ label {
+    color: #6f00ff;
+    transition: color 0.3s;
+  }
+  
+/* Hide the default checkbox */
+.LikeBtn input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.LikeBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.LikeBtn input:checked ~ .like {
+  animation: kfs-fill-like .5s forwards;
+}
+
+.LikeBtn .like {
+  fill: none;
+  stroke: black;
+}
+
+.LikeBtn input:checked ~ .celebrate {
+  display: block;
+}
+
+.LikeBtn .celebrate {
+  position: absolute;
+  animation: kfs-celebrate 1s;
+  animation-fill-mode: forwards;
+  display: none;
+  stroke: black;
+}
+
+@keyframes kfs-celebrate {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0;
+    display: none;
+  }
+}
+
+@keyframes kfs-fill-like {
+
+  50% {
+    fill: black;
+    stroke: black;
+    transform: scale(1.2);
+  }
+
+  100% {
+    fill: black;
+    stroke: black;
+  }
+}
+
+
+.DislikeBtn input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.DislikeBtn {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.DislikeBtn svg {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 50px;
+  width: 50px;
+  transition: all 0.3s;
+  fill: #666;
+}
+
+.DislikeBtn svg:hover {
+  transform: scale(1.1) rotate(-10deg);
+}
+
+.DislikeBtn input:checked ~ svg {
+  fill: rgb(185, 51, 51);
+}
+
+
+
+  
+  
+  
