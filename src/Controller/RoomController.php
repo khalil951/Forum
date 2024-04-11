@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use App\Entity\Room;
+use App\Form\PostType;
 use App\Form\RoomType;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +12,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 
 #[Route('/room')]
 class RoomController extends AbstractController
@@ -80,13 +86,59 @@ class RoomController extends AbstractController
     }
 
     #[Route('/{id}/posts', name: 'app_room_show_posts', methods: ['GET'])]
-    public function showPosts(Room $room): Response
+    public function showPosts(Request $request, Room $room, SessionInterface $session): Response
     {
         $posts = $room->getPosts();
+        $session->set('_previous_route', $request->attributes->get('_route'));
         return $this->render('post/index.html.twig', [
+            'room' => $room,
             'posts' => $posts,
         ]);
     }
+
+    #[Route('/{id}/posts/new', name: 'app_room_new_posts', methods: ['GET','POST'])]
+    public function newPosts(Request $request, RoomRepository $roomRepository, EntityManagerInterface $entityManager): Response
+    {
+        $post = new Post();
+
+        $roomIdString = $request->query->get('room_id');
+        $roomId = intval($roomIdString);
+
+        $roomId = $request->query->get('room_id');
+    
+        $form = $this->createForm(PostType::class, $post, [
+            'room' => $roomRepository->findOneBy(['id' => $roomId]),
+        ]);
+    
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+             // Handle file upload for profile picture
+            
+             $file = $form->get('img_url')->getData();
+             if ($file instanceof UploadedFile) {
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                 try {
+                     $file->move('/Applications/XAMPP/xamppfiles/htdocs/uploads' , $fileName); 
+                     $post->setImgUrl($fileName);
+                 } catch (FileException $e) {
+                     // Handle file upload error
+                     $this->addFlash('error', 'Failed to upload the file.');
+                     return $this->redirectToRoute('app_room_new_posts');
+                 }
+                }
+            $entityManager->persist($post);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_room_show_posts', ['id' => $roomId ], Response::HTTP_SEE_OTHER);
+        }
+    
+            // Fetch the corresponding Room entity from the database
+        return $this->render('post/new.html.twig', [
+            'post' => $post,
+            'form' => $form->createView(),
+        ]);
+    }
+
 
 
 

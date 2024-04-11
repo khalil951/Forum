@@ -13,37 +13,50 @@
         </button>
     </div>
 
-    <div class="card-container d-flex justify-content-center align-items-center no-repeat">
+    <div style="text-align: center; ">
+    <button class="group cursor-pointer outline-none hover:rotate-90 duration-300" title="Add New" style="border: none;">
+        <a href="{{ path('app_post_new') }}">
+            <svg class="stroke-teal-500 fill-none group-hover:fill-teal-800 group-active:stroke-teal-200 group-active:fill-teal-600 group-active:duration-0 duration-300"
+                viewBox="0 0 24 24"
+                height="50px"
+                width="50px"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-width="1.5" d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"></path>
+                <path stroke-width="1.5" d="M8 12H16"></path>
+                <path stroke-width="1.5" d="M12 16V8"></path>
+            </svg>
+        </a>
+    </button>
+</div>
+
+    <div class="card-container">
     {% for post in posts %}
-    <div class="container text-center">    
-    <div class="card" style="width: 20rem;">
-    <img src="{{asset('assets/images/money.jpg')}}" class="card-img-top" alt="{{post.imgUrl}}">
-    <div class="card-body">
+    <div class="container text-center" style='padding-top:1rem;'>    
+    <div class="card" style="width: 20rem; padding-bottom:0;">
+        {# {% set path = '/Applications/XAMPP/xamppfiles/htdocs/uploads/' ~ post.imgUrl %} #}
+        <img src="http://localhost/uploads/{{post.imgUrl}}" class="card-img-top" alt="#">  
+        <div class="card-body">
        <div class="container text-center">
     <h5 class="card-title">New Post</h5>
     <p class="card-text">{{ post.content }}</p>
   <div class="row justify-content-end">
     <div class="col-4" style="margin-left:12px;">
     </div>
-    <div class="col-4">
+    <div class="col-4"> <p style='font-size:10px;'>Posted By:</p>
       {{ post.author }}
     </div>
   </div>
   <div class="row">
     <div class="col">
-            <label class="LikeBtn">
-            <input checked="checked" type="checkbox">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="50px" width="50px" class="like">
-                <path d="M8 10V20M8 10L4 9.99998V20L8 20M8 10L13.1956 3.93847C13.6886 3.3633 14.4642 3.11604 15.1992 3.29977L15.2467 3.31166C16.5885 3.64711 17.1929 5.21057 16.4258 6.36135L14 9.99998H18.5604C19.8225 9.99998 20.7691 11.1546 20.5216 12.3922L19.3216 18.3922C19.1346 19.3271 18.3138 20 17.3604 20L8 20"></path>
+        <label class="LikeBtn">
+        <input type="checkbox">
+        <div class="checkmark">
+            <svg viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" class="icon">
+            <path d="M 24.10 6.29 Q 28.34 7.56 28.00 12.00 Q 27.56 15.10 27.13 18.19 A 0.45 0.45 4.5 0 0 27.57 18.70 Q 33.16 18.79 38.75 18.75 Q 42.13 18.97 43.23 21.45 Q 43.91 22.98 43.27 26.05 Q 40.33 40.08 40.19 40.44 Q 38.85 43.75 35.50 43.75 Q 21.75 43.75 7.29 43.75 A 1.03 1.02 0.0 0 1 6.26 42.73 L 6.42 19.43 A 0.54 0.51 -89.4 0 1 6.93 18.90 L 14.74 18.79 A 2.52 2.31 11.6 0 0 16.91 17.49 L 22.04 7.17 A 1.74 1.73 21.6 0 1 24.10 6.29 Z M 21.92 14.42 Q 20.76 16.58 19.74 18.79 Q 18.74 20.93 18.72 23.43 Q 18.65 31.75 18.92 40.06 A 0.52 0.52 88.9 0 0 19.44 40.56 L 35.51 40.50 A 1.87 1.83 5.9 0 0 37.33 39.05 L 40.51 23.94 Q 40.92 22.03 38.96 21.97 L 23.95 21.57 A 0.49 0.47 2.8 0 1 23.47 21.06 Q 23.76 17.64 25.00 12.00 Q 25.58 9.36 24.28 10.12 Q 23.80 10.40 23.50 11.09 Q 22.79 12.80 21.92 14.42 Z M 15.57 22.41 A 0.62 0.62 0 0 0 14.95 21.79 L 10.01 21.79 A 0.62 0.62 0 0 0 9.39 22.41 L 9.39 40.07 A 0.62 0.62 0 0 0 10.01 40.69 L 14.95 40.69 A 0.62 0.62 0 0 0 15.57 40.07 L 15.57 22.41 Z" fill-opacity="1.000"></path>
+            <circle r="1.51" cy="37.50" cx="12.49" fill-opacity="1.000"></circle>
             </svg>
-            <svg width="50" height="50" xmlns="http://www.w3.org/2000/svg" class="celebrate">
-                <polygon points="0,0 10,10"></polygon>
-                <polygon points="0,25 10,25"></polygon>
-                <polygon points="0,50 10,40"></polygon>
-                <polygon points="50,0 40,10"></polygon>
-                <polygon points="50,25 40,25"></polygon>
-                <polygon points="50,50 40,40"></polygon>
-                </svg>
+        </div>
+        <p class="like">Liked!</p>
         </label>
         <p style='margin-top:0;'>
             {% if post.NumLikes is null %}
@@ -53,12 +66,12 @@
                     {% endif %}
         </p>
     </div>
-    <div class="col">
+    <div class="col" style='padding-top:2rem;'>
             <label class="DislikeBtn">
             <input type="checkbox">
             <svg id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M2.156,14.901l2.489-8.725C5.012,4.895,6.197,4,7.528,4h13.473C21.554,4,22,4.448,22,5v14  c0,0.215-0.068,0.425-0.197,0.597l-5.392,7.24C15.813,27.586,14.951,28,14.027,28c-1.669,0-3.026-1.357-3.026-3.026V20H5.999  c-1.265,0-2.427-0.579-3.188-1.589C2.047,17.399,1.809,16.12,2.156,14.901z" id="XMLID_259_"></path><path d="M25.001,20h4C29.554,20,30,19.552,30,19V5c0-0.552-0.446-1-0.999-1h-4c-0.553,0-1,0.448-1,1v14  C24.001,19.552,24.448,20,25.001,20z M27.001,6.5c0.828,0,1.5,0.672,1.5,1.5c0,0.828-0.672,1.5-1.5,1.5c-0.828,0-1.5-0.672-1.5-1.5  C25.501,7.172,26.173,6.5,27.001,6.5z" id="XMLID_260_"></path></svg>
         </label>
-        <p style='margin-top:0;'>
+        <p style='margin-top:15px;'>
             {% if post.NumDislikes is null %}
                          0
                     {% else %}
@@ -87,7 +100,6 @@
   </div>
 </div>
     </div>
-
      {% else %}
             <div>
                 <p style='margin-bottom:20px;'>no records found</p>
@@ -96,25 +108,14 @@
     </div>
 
 
- <div style="text-align: center; ">
-    <button class="group cursor-pointer outline-none hover:rotate-90 duration-300" title="Add New" style="border: none;">
-        <a href="{{ path('app_post_new') }}">
-            <svg class="stroke-teal-500 fill-none group-hover:fill-teal-800 group-active:stroke-teal-200 group-active:fill-teal-600 group-active:duration-0 duration-300"
-                viewBox="0 0 24 24"
-                height="50px"
-                width="50px"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-width="1.5" d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"></path>
-                <path stroke-width="1.5" d="M8 12H16"></path>
-                <path stroke-width="1.5" d="M12 16V8"></path>
-            </svg>
-        </a>
-    </button>
-</div>
-
 <style>
 .card-container {
-    height: 100vh; /* Set height to viewport height for vertical centering */
+    height: 100vh;
+    padding-bottom:0; 
+    margin-bottom:2rem; 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    grid-gap: 20px;
 }
 
 .card-container .container {

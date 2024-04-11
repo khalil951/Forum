@@ -29,7 +29,6 @@ class Post
     private ?string $content = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message:"image is required")]
     #[Assert\Regex(pattern:"/\.png$|\.jpg$/",message:"Image type should be png or jpg")]
     private ?string $img_url = null;
 

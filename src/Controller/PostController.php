@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Post;
 use App\Entity\Room;
 use App\Form\PostType;
@@ -11,6 +12,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+
 
 #[Route('/post')]
 class PostController extends AbstractController
@@ -38,12 +43,26 @@ class PostController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+             // Handle file upload for profile picture
+            
+             $file = $form->get('img_url')->getData();
+             if ($file instanceof UploadedFile) {
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                 try {
+                     $file->move('/Applications/XAMPP/xamppfiles/htdocs/uploads' , $fileName); 
+                     $post->setImgUrl($fileName);
+                 } catch (FileException $e) {
+                     // Handle file upload error
+                     $this->addFlash('error', 'Failed to upload the file.');
+                     return $this->redirectToRoute('app_post_new');
+                 }
+                }
             $entityManager->persist($post);
             $entityManager->flush();
-    
-            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_room_index', [], Response::HTTP_SEE_OTHER);
         }
     
+            // Fetch the corresponding Room entity from the database
         return $this->render('post/new.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
@@ -53,8 +72,10 @@ class PostController extends AbstractController
     #[Route('/{id}', name: 'app_post_show', methods: ['GET'])]
     public function show(Post $post): Response
     {
+        $room = $post->getRoom();
         return $this->render('post/show.html.twig', [
             'post' => $post,
+            'room' => $room,
         ]);
     }
 
@@ -68,14 +89,26 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('img_url')->getData();
+             if ($file instanceof UploadedFile) {
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                 try {
+                     $file->move('/Applications/XAMPP/xamppfiles/htdocs/uploads' , $fileName); 
+                     $post->setImgUrl($fileName);
+                 } catch (FileException $e) {
+                     // Handle file upload error
+                     $this->addFlash('error', 'Failed to upload the file.');
+                     return $this->redirectToRoute('app_post_edit');
+                 }
+                }
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_room_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        $room = $post->getRoom();
         return $this->renderForm('post/edit.html.twig', [
             'post' => $post,
             'form' => $form,
+            'room' => $room,
         ]);
     }
 
@@ -87,13 +120,8 @@ class PostController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_room_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/posts', name: 'app_show_room_posts', methods: ['GET'])]
-    public function showPosts(Post $post): Response
-    {
-        $roomId = $post->getRoom()->getId();
-        return $this->redirectToRoute('app_room_show_posts', ['id' => $roomId]);
-    }
+
 }
