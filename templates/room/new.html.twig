@@ -35,10 +35,6 @@
     </div>
 </div>
 
-{# <div class='d-flex justify-content-between mt-3' style='display : hidden;'>
-    {{ form_rest(form) }}
-</div> #}
-
 
 <div class='mb-3' style="text-align:center">
     <button class="bg-indigo-900 text-gray-100 border border-indigo-900 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group">
@@ -49,6 +45,12 @@
 
 {{ form_end(form) }}
 
+<style>
+        li {
+            color: #E45449;
+        }
+    </style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const cards = document.getElementsByClassName('card');
@@ -56,7 +58,7 @@
         // Loop through each element with the class 'card'
         for (let i = 0; i < cards.length; i++) {
             cards[i].addEventListener('click', event => {
-                alert('Card clicked'); // Test action to check if the event listener works
+                alert('Card clicked'); 
             });
         }
     });

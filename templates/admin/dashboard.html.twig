@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="assets/css/magnific-popup.css">
     <link rel="stylesheet" href="assets/css/flaticon.css">
     <link rel="stylesheet" href="assets/css/main.css">
-
     <link rel="shortcut icon" href="assets/images/favicon.png" type="image/x-icon">
 </head>
 
@@ -62,7 +61,7 @@
                 <div class="site-header-container">
                     <div class="side-logo">
                         <a href="dashboard.html">
-                            <img src="assets/images/logo/logo.png" alt="logo">
+                            <img src="assets/images/logo.png" alt="logo">
                         </a>
                     </div>
                     <ul class="dashboard-menu">
@@ -421,8 +420,14 @@
                             </div>
                         </div>
 
-                <div class ='container-fluid'>
-                    {{ render_chart(chart, {'class': 'my-chart'}) }}
+                <div class ='container-fluid' style='margin-bottom:2rem;'>
+                    <h4 style='text-align:center; margin-bottom:1rem;'> Room Categories Distribution </h2>
+                    <div class="col-lg-4 mx-auto">
+                    <canvas id="roomCategories" width:'400' height:'100'></canvas>
+                        {% for category , count in topRoomCategories %}
+                            <p class='topRoomCategories' style='display:none;'> {{category}},{{count}} </p>
+                        {% endfor %}
+                    </div>
                 </div>       
 
                 <div class="container-fluid sticky-bottom">
@@ -447,6 +452,7 @@
         </section>
         <!--=======SideHeader-Section Ends Here=======-->
         
+        
 
     </div>
 
@@ -465,6 +471,44 @@
     <script src="assets/js/chart.js"></script>
     <script src="assets/js/circle-progress.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const topCategories = document.querySelector('#roomCategories');
+        const rooms = document.querySelectorAll('.topRoomCategories');
+        const labels = [];
+        const data = [];
+
+    // Parse data from hidden paragraphs
+    rooms.forEach(room => {
+        const [category, count] = room.innerHTML.split(',');
+        labels.push(category);
+        data.push(parseInt(count));
+    });
+        const categoriesGraph = new Chart(topCategories, {
+            type: "pie",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Categories Distribution",
+                    data: data,
+                    backgroundColor: [
+                        '#00cca2',
+                        '#8d16e8',
+                        '#ef764c',
+                    ],
+                    borderColor: [
+                        '#00cca2',
+                        '#8d16e8',
+                        '#ef764c',
+                    ],
+                    borderWidth: 1
+                }]
+            }
+                });
+    </script>
+    
 
     <script>
         $('.progress1.circle').circleProgress({

@@ -28,7 +28,7 @@ class Room
     #[Assert\NotBlank(message:"Description is required")]
     private ?string $description = null;
 
-    #[ORM\OneToMany(mappedBy: 'room', targetEntity: Post::class)]
+    #[ORM\OneToMany(mappedBy: 'room', targetEntity: Post::class, cascade: ['remove'])]
     private Collection $posts;
 
     public function __construct()

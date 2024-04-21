@@ -124,4 +124,45 @@
 
 </style>
 
+<script>
+const likes = document.querySelectorAll('.LikeBtn');
+const dislikes = document.querySelectorAll('.DislikeBtn');
+
+likes.forEach(like => {
+    like.addEventListener('click', (e) => {
+        console.log('Like clicked');
+         if (!like.classList.contains('clicked')) {
+            // If the like button is not clicked, send an AJAX request to update the likes
+            fetch('update_likes.php', {
+                method: 'POST',
+                body: JSON.stringify({ increment: true }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log('Likes updated successfully:', data);
+                like.classList.add('clicked');
+            })
+            .catch(error => {
+                console.error('There was a problem updating the likes:', error);
+            });
+        }
+    });
+});
+
+dislikes.forEach(dislike => {
+    dislike.addEventListener('click', (e) => {
+        console.log('Dislike clicked');
+        dislike.classList.add('clicked');
+    });
+});
+</script>
+
 {% endblock %}

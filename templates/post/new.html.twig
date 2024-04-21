@@ -48,6 +48,102 @@
         </rom>
     </div>
 
-    {{ form_end(form) }}
+ 
+    <style>
+    li {
+        color: #E45449;
+    }
+
+    .suggestion-container {
+        position: absolute; 
+        left: 15rem; 
+        bottom : 14rem;
+        z-index: 1000; 
+        background-color: white; 
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+        
+    }
+
+    .suggestion-item {
+        padding: 10px; 
+        cursor: pointer;
+        color: #ADA8AB !important;
+    }
+
+    .suggestion-item:hover {
+        background-color: #f0f0f0; 
+    }
+</style>
+
+<script>
+    const content = document.querySelector('#post_content');
+
+    const appendSuggestion = (suggestion) => {
+    // Check if there's an existing suggestion container and remove it
+    const existingSuggestion = content.parentElement.querySelector('.suggestion-container');
+    if (existingSuggestion) {
+        existingSuggestion.remove();
+    }
+
+    const suggestion_container = document.createElement("div");
+    const suggestion_item = document.createElement("p");
+    suggestion_item.innerHTML = suggestion;
+    suggestion_container.classList.add('suggestion-container');
+    suggestion_item.classList.add('suggestion-item');
+    suggestion_container.appendChild(suggestion_item); 
+
+    const parentElement = content.parentElement;
+    parentElement.insertBefore(suggestion_container, content.nextElementSibling);  
+}
+
+
+
+
+    const autosuggest = async (query) => {
+        const options = {
+            method: 'GET',
+            url: 'https://auto-suggest-queries.p.rapidapi.com/suggestqueries',
+            params: { query: query },
+            headers: {
+                'X-RapidAPI-Key': '77280ef4bfmsh5a1c660eaa091abp16b165jsned5b547e4d20',
+                'X-RapidAPI-Host': 'auto-suggest-queries.p.rapidapi.com'
+            }
+        };
+
+        try {
+            const response = await axios.request(options);
+            let suggestion = response.data[0];
+            console.log(suggestion);
+            console.log(typeof suggestion);
+            appendSuggestion(suggestion);
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    let searchTimeoutToken = 0;
+
+    window.onload = () => {
+        content.addEventListener('keyup', (evt) => {
+            clearTimeout(searchTimeoutToken);
+            const contentValue = content.value.trim();
+            let suggestion = document.querySelector('.suggestion-item');
+            let suggestion_container = document.querySelector('.suggestion-container');
+            if (event.keyCode === 39 && suggestion != null ) 
+                { 
+                    content.value = suggestion.innerHTML;
+                }     
+            if (contentValue.length === 0) {
+                suggestion.style.display = 'none';                
+                return;
+            }
+            searchTimeoutToken = setTimeout(() => {
+                autosuggest(contentValue);
+            }, 250);
+        });
+    }
+</script>
+
 
 {% endblock %}
