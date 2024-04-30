@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PostReactRepository;
+use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostReactRepository::class)]

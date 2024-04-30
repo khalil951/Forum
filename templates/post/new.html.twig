@@ -29,7 +29,7 @@
 
     <div class='mb-3'>
         {{ form_label(form.content, "Content", {'attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+        {{ form_widget(form.content, {'attr': {'class': 'form-control', 'autocomplete': 'off'}}) }}
         {{ form_errors(form.content) }}
     </div>
 

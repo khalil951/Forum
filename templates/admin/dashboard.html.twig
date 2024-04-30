@@ -422,11 +422,11 @@
 
                 <div class ='container-fluid' style='margin-bottom:2rem;'>
                     <h4 style='text-align:center; margin-bottom:1rem;'> Room Categories Distribution </h2>
-                    <div class="col-lg-4 mx-auto">
-                    <canvas id="roomCategories" width:'400' height:'100'></canvas>
-                        {% for category , count in topRoomCategories %}
+                    <div class="col-lg-4 mx-auto" id="roomCategories" width="400" height="400">
+                        {{ render_chart(chart)}}
+                        {# {% for category , count in topRoomCategories %}
                             <p class='topRoomCategories' style='display:none;'> {{category}},{{count}} </p>
-                        {% endfor %}
+                        {% endfor %} #}
                     </div>
                 </div>       
 
@@ -472,9 +472,24 @@
     <script src="assets/js/circle-progress.js"></script>
     <script src="assets/js/main.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <script>
+    const roomCategoriesCanvas = document.querySelector('[data-controller="symfony--ux-chartjs--chart"]');
+    roomCategoriesCanvas.width = 400;
+    roomCategoriesCanvas.height = 400;
+    const chartDataString = roomCategoriesCanvas.getAttribute('data-symfony--ux-chartjs--chart-view-value');
+    const chartData = JSON.parse(chartDataString);
+
+    new Chart(roomCategoriesCanvas, {
+        type: chartData.type,
+        data: chartData.data,
+        options: chartData.options
+    });
+</script>
+
+
+    {# <script>
         const topCategories = document.querySelector('#roomCategories');
         const rooms = document.querySelectorAll('.topRoomCategories');
         const labels = [];
@@ -507,7 +522,7 @@
                 }]
             }
                 });
-    </script>
+    </script> #}
     
 
     <script>
