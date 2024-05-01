@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use App\Repository\RoomRepository;
 class PostType extends AbstractType
 {
@@ -25,12 +26,13 @@ class PostType extends AbstractType
     {
         
         $builder
-        ->add('room', ChoiceType::class, [
-            'choices' => $options['rooms'],
-            'choice_label' => 'sub_category', 
-            'placeholder' => 'Choose a room',
-            'attr' => ['class' => 'form-select'],
+        
+        ->add('room', TextType::class, [
+            'disabled' => true,
+            'data' => $options['room']->getCatgory(), 
+            'attr' => ['readonly' => true],
         ])
+        
         ->add('author', TextType::class, [
             'label' => 'author',
             'attr' => ['class' => 'form-control'],
@@ -60,7 +62,7 @@ class PostType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Post::class,
-            'rooms' => [],
+            'room' => null,
         ]);
     }
 }

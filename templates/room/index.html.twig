@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Room index</h1>
 
-    <div class="searchBox" style='transform: translate(23rem,-3rem);'>
+    <div class="searchBox" style='transform: translate(24rem,-3rem);'>
     <input class="searchInput" type="text" id="searchInput" placeholder="Search by category..." onkeyup="searchForms()">
     <button class="searchButton" href="#">
         <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="none">
@@ -93,7 +93,7 @@
 </div>
 
 <style>
-    .searchBox {
+.searchBox {
   display: flex;
   max-width: 230px;
   align-items: center;
@@ -111,20 +111,20 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #66B9F4;
+  background: #33406a;
   border: 0;
   display: inline-block;
   transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
 }
 /*hover effect*/
-button:hover {
+.searchButton:hover {
   color: #fff;
   background-color: #1A1A1A;
   box-shadow: rgba(0, 0, 0, 0.5) 0 10px 20px;
   transform: translateY(-3px);
 }
 /*button pressing effect*/
-button:active {
+.searchButton:active {
   box-shadow: none;
   transform: translateY(0);
 }
@@ -157,9 +157,6 @@ button:active {
         }
     }
 </script>
-
-
-
 
 {% endblock %}
 
