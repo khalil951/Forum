@@ -4,17 +4,21 @@ namespace App\Controller;
 
 
 use App\Entity\Post;
-use App\Entity\Room;
+use App\Entity\PostReact;
 use App\Form\PostType;
-use App\Repository\PostRepository;
+use App\Repository\PostReactRepository;
 use App\Repository\RoomRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\VarDumper\VarDumper;
+use Doctrine\Persistence\ObjectManager;
 
 
 
@@ -34,11 +38,8 @@ class PostController extends AbstractController
     {
     $post = new Post();
 
-    $room = $roomRepository->find($room_id);
- 
-    $form = $this->createForm(PostType::class, $post, [
-        'room' => $room,
-    ]);
+    $room = $roomRepository->find($room_id); 
+    $form = $this->createForm(PostType::class, $post);
 
     $form->handleRequest($request);
 
@@ -60,17 +61,18 @@ class PostController extends AbstractController
 
         // Set the room for the post
         $post->setRoom($room);
+        //VarDumper::dump($post);
         $entityManager->persist($post);
         $entityManager->flush();
         // Redirect to the room index page after successfully creating the post
-        return $this->redirectToRoute('app_room_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_room_show_posts', ['id' => $room_id], Response::HTTP_SEE_OTHER);
     }
 
     // Render the new post form with the associated room
-    return $this->render('post/new.html.twig', [
+    return $this->renderForm('post/new.html.twig', [
         'post' => $post,
         'room' => $room,
-        'form' => $form->createView(),
+        'form' => $form,
     ]);
 }
 
@@ -86,15 +88,13 @@ class PostController extends AbstractController
     }
     
     #[Route('/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Post $post, EntityManagerInterface $entityManager, RoomRepository $roomRepository, int $room_id): Response
+    public function edit(Request $request, Post $post, EntityManagerInterface $entityManager, int $room_id): Response
     {
         // Fetch the room associated with the post
         $room = $post->getRoom();
     
         // Create the form with the specific room associated with the post
-        $form = $this->createForm(PostType::class, $post, [
-            'room' => $room,
-        ]);
+        $form = $this->createForm(PostType::class, $post);
     
         $form->handleRequest($request);
     
@@ -113,7 +113,7 @@ class PostController extends AbstractController
                 }
     
             $entityManager->flush();
-            return $this->redirectToRoute('app_room_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_room_show_posts', ['id' => $room_id], Response::HTTP_SEE_OTHER);
         }
     
         return $this->renderForm('post/edit.html.twig', [
@@ -130,9 +130,116 @@ class PostController extends AbstractController
             $entityManager->remove($post);
             $entityManager->flush();
         }
-        $room = $post->getRoom();
+        $room_id = $post->getRoom()->getId();
+        return $this->redirectToRoute('app_room_show_posts', ['id' => $room_id], Response::HTTP_SEE_OTHER);
+    }
 
-        return $this->redirectToRoute('app_room_index', ['room' => $room,], Response::HTTP_SEE_OTHER);
+
+    // public function isLikedByUser(User $user) : bool {
+    //     foreach($this->likes as $like){
+    //         if ($like->getUser() == $user) return true;
+    //     }
+    //     return false;
+    // }
+
+    // #[Route('/{id}/like', name: 'app_post_like')]
+    // public function like(Post $post, EntityManagerInterface $entityManager, PostReactRepository $postReactRepository): Response
+    // {
+    //    // $user = $this->getUser();
+
+    //     // if (!$user) return $this->json([
+    //     //     'code' => 403,
+    //     //     'message' => 'unauthorized'
+    //     // ],403);
+        
+    //     // if ($post->isLikedByUser($user)) {
+    //     //     // If liked, find the corresponding PostReact entity
+    //     //     $like = $postReactRepository->findOneBy([
+    //     //         'post' => $post,
+    //     //         'user' => $user
+    //     //     ]);
+            
+    //     //     // Now you can use the $like entity as needed
+    //     //     // For example, you can remove the like if you want
+    //     //     if ($like) {
+    //     //         $entityManager->remove($like);
+    //     //         $entityManager->flush();
+    //     //     }
+    //         //return $this->json(['code' => 200, 'message' => 'Post unliked successfully' , 'likes' => $postReactRepository->count(['post' => $post]) ], 200);
+    //     // }
+
+    //     $like = new PostReact();
+    //     $like->setPost($post);
+    //       //  ->setUser($user);
+
+    //     $entityManager->persist($like);
+    //     $entityManager->flush();
+
+    //     // For demonstration purposes, let's assume we're just returning a JSON response
+    //     return new Response(json_encode(['code' => 200, 'message' => 'Liked added' , 'likes' => $postReactRepository->count(['post' => $post])]), 200, ['Content-Type' => 'application/json']);   
+    // }
+
+
+    #[Route('/{id}/like', name: 'app_post_like')]
+    public function like(Post $post, EntityManagerInterface $entityManager, PostReactRepository $postReactRepository): Response
+    {
+        // Check if the post is already liked
+        if ($post->isLiked($entityManager)) {
+            // If liked, find the corresponding PostReact entity
+            $like = $postReactRepository->findOneBy([
+                'post' => $post
+            ]);
+            
+            // If like exists, remove it
+            if ($like) {
+                $entityManager->remove($like);
+                $entityManager->flush();
+            }
+            return $this->json(['code' => 200, 'message' => 'Post unliked successfully', 'likes' => $postReactRepository->count(['post' => $post])], 200);
+        }
+
+        // If not liked, create a new PostReact entity to represent the like
+        $like = new PostReact();
+        $like->setPost($post);
+        $like->setUserId(1);
+        $like->setIsliked(true);
+        // Persist and flush the like entity
+        $entityManager->persist($like);
+        $entityManager->flush();
+        $post->setNumLikes($postReactRepository->count(['post' => $post , 'Isliked' => true]));
+        // Return a JSON response indicating success and the updated like count
+        return $this->json(['code' => 200, 'message' => 'Post liked successfully', 'likes' => $postReactRepository->count(['post' => $post, 'Isliked' => true])], 200);
+    }
+
+    #[Route('/{id}/dislike', name: 'app_post_dislike')]
+    public function dislike(Post $post, EntityManagerInterface $entityManager, PostReactRepository $postReactRepository): Response
+    {
+        // Check if the post is already liked
+        if ($post->isLiked($entityManager)) {
+            // If liked, find the corresponding PostReact entity
+            $dislike = $postReactRepository->findOneBy([
+                'post' => $post
+            ]);
+            
+            // If like exists, remove it
+            if ($dislike) {
+                $entityManager->remove($dislike);
+                $entityManager->flush();
+            }
+            return $this->json(['code' => 200, 'message' => 'Post unliked successfully', 'likes' => $postReactRepository->count(['post' => $post])], 200);
+        }
+
+        // If not liked, create a new PostReact entity to represent the like
+        $dislike = new PostReact();
+        $dislike->setPost($post);
+        $dislike->setUserId(1);
+        $dislike->setIsliked(false);
+        // Persist and flush the like entity
+        $entityManager->persist($dislike);
+        $entityManager->flush();
+        $post->setNumDisLikes($postReactRepository->count(['post' => $post , 'Isliked' => false]));
+        // Return a JSON response indicating success and the updated like count
+        return $this->json(['code' => 200, 'message' => 'Post liked successfully', 'dislikes' => $postReactRepository->count(['post' => $post])], 200);
     }
 
 

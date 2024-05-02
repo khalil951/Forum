@@ -3,15 +3,15 @@
 namespace App\Form;
 
 use App\Entity\Post;
+use App\Entity\Room;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use App\Repository\RoomRepository;
+
 class PostType extends AbstractType
 {
 
@@ -26,13 +26,6 @@ class PostType extends AbstractType
     {
         
         $builder
-        
-        ->add('room', TextType::class, [
-            'disabled' => true,
-            'data' => $options['room']->getCatgory(), 
-            'attr' => ['readonly' => true],
-        ])
-        
         ->add('author', TextType::class, [
             'label' => 'author',
             'attr' => ['class' => 'form-control'],
@@ -62,7 +55,7 @@ class PostType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Post::class,
-            'room' => null,
+            //'room' => null,
         ]);
     }
 }

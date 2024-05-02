@@ -31,7 +31,7 @@
     </table>
 
     {{ include('room/_delete_form.html.twig') }}
-        <p style='transform: translate(-15em,3em); margin-bottom:10px;'> Need Help? </p>
+        <p style='transform: translate(-15em,3em); margin-bottom:10px;'> Need Assistance? </p>
     	<div class="container-chat" style='transform: translate(-15em,3em);'>
       <div class="nav-bar">
       	<a>Chat</a>
@@ -276,7 +276,7 @@ async function chatgpt() {
 }
 
 // Event listener for the send button click
-send.addEventListener('click', () => chatgpt());
+send.addEventListener('click', chatgpt);
 
 </script>
 

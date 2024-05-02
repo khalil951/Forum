@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Entity\Room;
 use App\Form\PostType;
 use App\Form\RoomType;
+use App\Repository\PostReactRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -86,13 +87,21 @@ class RoomController extends AbstractController
     }
 
     #[Route('/{id}/posts', name: 'app_room_show_posts', methods: ['GET'])]
-    public function showPosts(Request $request, Room $room, SessionInterface $session): Response
+    public function showPosts(Request $request, Room $room, SessionInterface $session , PostReactRepository $postReactRepository ): Response
     {
         $posts = $room->getPosts();
+         // Initialize an array to store the count of likes for each post
+         $likesCount = [];
+
+        // Iterate through each post to fetch the count of likes
+        foreach ($posts as $post) {
+         $likesCount[$post->getId()] = $postReactRepository->count(['post' => $post]);
+         }
         $session->set('_previous_route', $request->attributes->get('_route'));
         return $this->render('post/index.html.twig', [
             'room' => $room,
             'posts' => $posts,
+            'likesCount' => $likesCount,
         ]);
     } 
 

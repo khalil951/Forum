@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use App\Repository\PostReactRepository;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -40,6 +42,9 @@ class Post
 
     #[ORM\Column]
     private ?int $user_id = null;
+
+    // #[ORM\Column(nullable: true)]
+    // private ?bool $isLiked = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?Room $room = null;
@@ -141,6 +146,18 @@ class Post
         return $this;
     }
 
+    // public function isIsLiked(): ?bool
+    // {
+    //     return $this->isLiked;
+    // }
+
+    // public function setIsLiked(?bool $isLiked): static
+    // {
+    //     $this->isLiked = $isLiked;
+
+    //     return $this;
+    // }
+
     public function getRoom(): ?Room
     {
         return $this->room;
@@ -182,4 +199,17 @@ class Post
 
         return $this;
     }
+
+
+    public function isLiked(EntityManagerInterface $entityManager): bool
+    {
+        // Query the database to check if the post has any likes
+        $postLikeCount = $entityManager->getRepository(PostReact::class)
+            ->count(['post' => $this, 'Isliked' => true]);
+
+        // Return true if there are likes, false otherwise
+        return $postLikeCount > 0;
+    }
+   
+
 }

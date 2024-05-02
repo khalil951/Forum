@@ -18,7 +18,7 @@ class RoomType extends AbstractType
         $builder
         ->add('catgory', ChoiceType::class, [
             'label' => 'Category',
-            'attr' => ['class' => 'form-select'], // You can use 'form-control' if needed
+            'attr' => ['class' => 'form-select'],
             'choices' => [
                 'Stocks' => 'Stocks',
                 'ETFs' => 'ETFs',
